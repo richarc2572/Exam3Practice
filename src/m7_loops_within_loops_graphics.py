@@ -5,8 +5,10 @@ This problem provides practice at:
   ***  LOOPS WITHIN LOOPS in 2D GRAPHICS problems.  ***
 
 Authors: David Mutchler, Valerie Galluzzi, Mark Hays, Amanda Stouder,
-         their colleagues and PUT_YOUR_NAME_HERE.
-"""  # TODO: 1. PUT YOUR NAME IN THE ABOVE LINE.
+         their colleagues and Clayton Richards.
+"""  # DONE: 1. PUT YOUR NAME IN THE ABOVE LINE.
+
+import math
 
 ########################################################################
 # Students:
@@ -63,6 +65,24 @@ def run_test_hourglass():
     window2.close_on_mouse_click()
 
 
+def pyramid(window, n, point, radius, color, direction):
+    original_x = point.x
+    original_y = point.y
+    x = original_x
+    y = original_y
+    for j in range(n):
+        for k in range(j + 1):
+            circle = rg.Circle(rg.Point(x, y), radius)
+            circle.fill_color = color
+            circle.attach_to(window)
+            line = rg.Line(rg.Point(x - radius, y), rg.Point(x + radius, y))
+            line.attach_to(window)
+            window.render()
+            x = x + 2 * radius
+        y = y + direction * radius * math.sqrt(3)
+        x = original_x - radius * (j + 1)
+
+
 def hourglass(window, n, point, radius, color):
     """
     See   hourglass_picture.pdf   in this project for pictures that may
@@ -89,7 +109,7 @@ def hourglass(window, n, point, radius, color):
     a color that rosegraphics understands.
     """
     # ------------------------------------------------------------------
-    # TODO: 2. Implement and test this function.
+    # DONE: 2. Implement and test this function.
     #       We provided some tests for you (above).
     # ------------------------------------------------------------------
     ####################################################################
@@ -101,6 +121,8 @@ def hourglass(window, n, point, radius, color):
     #    DIFFICULTY:      8
     #    TIME ESTIMATE:  25 minutes (warning: this problem is challenging)
     # ------------------------------------------------------------------
+    pyramid(window, n, point, radius, color, 1)
+    pyramid(window, n, point, radius, color, -1)
 
 
 def run_test_many_hourglasses():
@@ -163,7 +185,7 @@ def many_hourglasses(window, square, m, colors):
     each of which denotes a color that rosegraphics understands.
     """
     # ------------------------------------------------------------------
-    # TODO: 3. Implement and test this function.
+    # DONE: 3. Implement and test this function.
     #       We provided some tests for you (above).
     # ------------------------------------------------------------------
     ####################################################################
@@ -179,6 +201,25 @@ def many_hourglasses(window, square, m, colors):
     #                         a correct "hourglass" function above)
     #    TIME ESTIMATE:  20 minutes (warning: this problem is challenging)
     # ------------------------------------------------------------------
+    length = square.length_of_each_side
+    width = length
+    height = length
+    square.attach_to(window)
+    hourglass(window, 1, square.center, length // 2, colors[0])
+    window.render(0.1)
+    x = square.center.x + length // 2
+    y = square.center.y - length // 2 - math.sqrt(3) * length / 2
+    for k in range(m - 1):
+        width = width + length
+        height = height + 2 * math.sqrt(3) * length / 2
+        rectangle = rg.Rectangle(rg.Point(x, y), rg.Point(x + width,
+                                                          y + height))
+        hourglass(window, k + 2, rectangle.get_center(), length // 2,
+                  colors[(k + 1) % len(colors)])
+        rectangle.attach_to(window)
+        window.render(0.1)
+        x = x + width
+        y = y - math.sqrt(3) * length / 2
 
 
 # ----------------------------------------------------------------------
